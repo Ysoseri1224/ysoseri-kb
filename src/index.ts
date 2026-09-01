@@ -137,8 +137,7 @@ export default {
     if (path === '/api/sync' && request.method === 'POST') return handleSync(request, env);
     if (path.startsWith('/api/system/')) return getSystem(env, normalizeId(path.slice('/api/system/'.length)));
     if (path.startsWith('/api/entry/')) return getEntry(env, normalizeId(path.slice('/api/entry/'.length)));
-    if (path.startsWith('/system/')) return html(pageShell());
-    if (path.startsWith('/entry/')) return html(pageShell());
+    if (path === '/search' || path === '/updates' || path.startsWith('/system/') || path.startsWith('/entry/')) return html(pageShell());
     return json({ error: 'not_found' }, 404);
   },
 };
