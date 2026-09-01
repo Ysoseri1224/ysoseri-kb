@@ -1,0 +1,50 @@
+name: 手动同步 NIST 知识库
+
+on:
+  workflow_dispatch:
+    inputs:
+      scope:
+        description: "同步范围"
+        required: true
+        default: "full"
+        type: choice
+        options:
+          - full
+          - ti
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - name: Install dependencies
+        run: npm ci
+      - name: Fetch source pages
+        run: |
+          if [ "${{ inputs.scope }}" = "ti" ]; then
+            npm run sync:ti
+          else
+            node crawler/sync.mjs
+          fi
+      - name: Apply D1 snapshot
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx wrangler d1 execute ysoseri-kb --remote --file data/import.sql
+      - name: Save manifest metadata
+        run: |
+          mkdir -p sync-manifests
+          node -e "const fs=require('fs');const p=JSON.parse(fs.readFileSync('data/import.json','utf8'));p.pages=p.pages.map(({html,...page})=>page);fs.writeFileSync('sync-manifests/${GITHUB_RUN_ID}.json',JSON.stringify(p,null,2));"
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add sync-manifests
+          git commit -m "chore: record NIST sync manifest" || true
+          git push
