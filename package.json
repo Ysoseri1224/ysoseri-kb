@@ -8,9 +8,11 @@
     "build": "tsc --noEmit",
     "sync:sample": "node crawler/sync.mjs --max-systems 3 --max-entries 20",
     "sync:ti": "node crawler/sync.mjs --systems Ti --max-entries 200",
+    "sync:upload-r2": "node crawler/upload-r2.mjs",
     "test": "node --test crawler/*.test.mjs"
   },
   "devDependencies": {
+    "@aws-sdk/client-s3": "^3.862.0",
     "@cloudflare/workers-types": "^5.20260828.1",
     "cheerio": "^1.1.2",
     "typescript": "^5.9.2",

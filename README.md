@@ -29,6 +29,12 @@ node crawler/sync.mjs
 
 `data/import.json` 保存抓取快照元数据，`data/import.sql` 是可审计的 D1 导入脚本。附件只写入 NIST 原始下载链接，不重新托管。
 
+抓取完成后可把原始 HTML 和精简 manifest 写入 R2 快照桶：
+
+```powershell
+npm run sync:upload-r2
+```
+
 ## API
 
 - `GET /api/search?q=Ti`
