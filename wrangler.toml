@@ -1,0 +1,17 @@
+name = "ysoseri-kb"
+main = "src/index.ts"
+compatibility_date = "2026-09-01"
+workers_dev = true
+
+[[d1_databases]]
+binding = "DB"
+database_name = "ysoseri-kb"
+database_id = "dbb29ae9-ee86-420e-b9c1-5b0e06e4ca3e"
+migrations_dir = "migrations"
+
+[[r2_buckets]]
+binding = "SNAPSHOTS"
+bucket_name = "ysoseri-kb-snapshots"
+
+[vars]
+SOURCE_BASE = "https://www.ctcms.nist.gov"
